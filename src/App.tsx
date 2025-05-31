@@ -46,9 +46,35 @@ function App() {
     setTasks(deleteText);
   };
 
-  const hancleChange = (completed: boolean) => {
-    
-  }
+  /**
+   * 完了未完了の更新
+   * @param id
+   */
+  const hancleChange = (id: string) => {
+    const updateTask = tasks.map((task) => {
+      if (task.id === id) {
+        return { ...task, completed: !task.completed };
+      }
+      return task;
+    });
+    setTasks(updateTask);
+  };
+
+  const handleUpdate = (id: string) => {
+    const newText = prompt(
+      "新しいタスク名を入力してくだい",
+      tasks.find((task) => task.id === id)?.text
+    );
+    if (newText && newText.trim() !== "") {
+      const updatedTasks = tasks.map((task) => {
+        if (task.id === id) {
+          return { ...task, text: newText };
+        }
+        return task;
+      });
+      setTasks(updatedTasks);
+    }
+  };
 
   return (
     <div className="App">
@@ -68,9 +94,14 @@ function App() {
       <ul>
         {tasks.map((task) => (
           <li key={task.id}>
-            <input type="checkbox" onChange={()=>hancleChange(task.completed)} />
+            <input
+              type="checkbox"
+              onChange={() => hancleChange(task.id)}
+              checked={task.completed}
+            />
             {task.text}
             {task.completed ? `完了` : "未完了"}
+            <button onClick={() => handleUpdate(task.id)}>更新</button>
             <button onClick={() => handleDelete(task.id)}>削除</button>
           </li>
         ))}
